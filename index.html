@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LifeOS">
+<meta name="theme-color" content="#0D1117">
+<title>LifeOS</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0D1117;--s1:#161B22;--s2:#21262D;--bd:#30363D;--blue:#388BFD;--green:#3FB950;--red:#F85149;--gold:#D29922;--purple:#A371F7;--teal:#39C5CF;--txt:#E6EDF3;--mut:#8B949E;--r:14px;--sb:env(safe-area-inset-bottom,0px)}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;overscroll-behavior:none}
+body{display:flex;flex-direction:column;max-width:430px;margin:0 auto}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(22,27,34,.94);backdrop-filter:blur(20px);border-top:.5px solid var(--bd);display:flex;justify-content:space-around;padding:8px 0 calc(8px + var(--sb));z-index:100}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border:none;background:none;color:var(--mut);cursor:pointer;font-size:10px;font-weight:500;transition:color .2s;min-width:52px}
+.nb.on{color:var(--blue)}
+.nb svg{width:22px;height:22px;stroke-width:1.8;fill:none;stroke:currentColor}
+.page{display:none;flex-direction:column;flex:1;overflow-y:auto;padding-bottom:calc(76px + var(--sb));padding-top:58px}
+.page.on{display:flex}
+.bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(13,17,23,.92);backdrop-filter:blur(20px);border-bottom:.5px solid var(--bd);padding:14px 20px 10px;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.bar h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.bar span{font-size:13px;color:var(--mut)}
+.lbl{font-size:11px;font-weight:600;color:var(--mut);letter-spacing:.8px;text-transform:uppercase;padding:0 20px;margin:18px 0 8px}
+.card{background:var(--s1);border-radius:var(--r);border:.5px solid var(--bd);padding:16px;margin:0 16px 12px}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;margin-bottom:12px}
+.kpi{background:var(--s1);border-radius:var(--r);border:.5px solid var(--bd);padding:14px}
+.kv{font-size:26px;font-weight:700;letter-spacing:-1px;display:block;margin-bottom:4px}
+.kl{font-size:11px;color:var(--mut);font-weight:500}
+.ks{font-size:12px;margin-top:4px}
+.hrow{display:flex;align-items:center;padding:11px 0;border-bottom:.5px solid var(--bd);gap:10px}
+.hrow:last-child{border-bottom:none}
+.hico{font-size:20px;width:30px;text-align:center;flex-shrink:0}
+.hi{flex:1;min-width:0}
+.hn{font-size:14px;font-weight:500}
+.hg{font-size:11px;color:var(--mut);margin-top:2px}
+.pb{height:3px;background:var(--s2);border-radius:2px;margin-top:5px;overflow:hidden}
+.pf{height:100%;border-radius:2px;transition:width .4s}
+.hbtn{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--bd);background:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.hbtn.ok{background:var(--green);border-color:var(--green)}
+.frow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:.5px solid var(--bd)}
+.frow:last-child{border-bottom:none}
+.fl{font-size:14px}
+.fl small{display:block;font-size:11px;color:var(--mut);margin-top:1px}
+.fa{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:8px}
+.cdh{font-size:10px;color:var(--mut);text-align:center;font-weight:600;padding-bottom:3px}
+.cd{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border:.5px solid transparent}
+.cd.td{border-color:var(--blue);color:var(--blue)}
+.cd.dn{background:var(--green);color:#fff;border-color:var(--green)}
+.cd.em{opacity:.15}
+.wdb{flex:1;padding:7px 3px;border:.5px solid var(--bd);border-radius:10px;background:none;color:var(--mut);cursor:pointer;font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s}
+.wdb.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+.wdb .dn{font-size:16px;font-weight:700}
+.ti{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid var(--bd)}
+.ti:last-child{border-bottom:none}
+.tc{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--bd);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:none;transition:all .15s}
+.tc.ok{background:var(--blue);border-color:var(--blue)}
+.tt{flex:1;font-size:14px}
+.tt.x{text-decoration:line-through;color:var(--mut)}
+.pd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+input,select,textarea{background:var(--s2);border:.5px solid var(--bd);border-radius:10px;color:var(--txt);font-size:15px;padding:10px 12px;outline:none;-webkit-appearance:none;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+.ir{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ir label{font-size:13px;color:var(--mut);white-space:nowrap;min-width:84px}
+.ir input,.ir select{flex:1}
+.btn{border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s;width:100%;font-family:inherit}
+.bp{background:var(--blue);color:#fff}
+.bd2{background:rgba(248,81,73,.15);color:var(--red)}
+.btn:active{opacity:.7}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:.5px solid var(--bd)}
+.srow:last-child{border-bottom:none}
+.sl{font-size:14px}
+.sl small{display:block;font-size:11px;color:var(--mut);margin-top:1px}
+.tgl{position:relative;width:44px;height:26px;flex-shrink:0}
+.tgl input{opacity:0;width:0;height:0}
+.ts{position:absolute;inset:0;background:var(--bd);border-radius:13px;cursor:pointer;transition:.3s}
+.ts:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
+.tgl input:checked+.ts{background:var(--blue)}
+.tgl input:checked+.ts:before{transform:translateX(18px)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.md{background:var(--s1);border-radius:20px 20px 0 0;padding:20px 20px calc(20px + var(--sb));width:100%;max-width:430px;max-height:85vh;overflow-y:auto}
+.mh{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 16px}
+.md h2{font-size:17px;font-weight:700;margin-bottom:16px}
+.hide{display:none}
+.str{display:inline-flex;align-items:center;gap:4px;background:rgba(210,153,34,.15);color:var(--gold);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600}
+.ring{display:flex;align-items:center;justify-content:center;position:relative;width:76px;height:76px}
+.ring svg{position:absolute;top:0;left:0}
+.rl{position:absolute;text-align:center}
+.rp{font-size:15px;font-weight:700}
+.rm{font-size:9px;color:var(--mut)}
+.ickbtn{background:none;border:none;color:var(--mut);font-size:18px;cursor:pointer;padding:0 4px;line-height:1}
+</style>
+</head>
+<body>
+<div class="bar"><h1 id="btitle">LifeOS</h1><span id="bdate"></span></div>
+
+<div class="page on" id="p-dash">
+  <div class="lbl">сводка</div>
+  <div class="kgrid">
+    <div class="kpi"><span class="kv" id="d-bal" style="color:var(--green)">—</span><span class="kl">Остаток</span><div class="ks str" id="d-str">🔥 0 дней</div></div>
+    <div class="kpi"><span class="kv" id="d-h" style="color:var(--blue)">—</span><span class="kl">Привычки сегодня</span></div>
+    <div class="kpi"><span class="kv" id="d-mp" style="color:var(--gold)">—</span><span class="kl">Месяц привычек</span></div>
+    <div class="kpi"><span class="kv" id="d-tk" style="color:var(--purple)">—</span><span class="kl">Задач на неделе</span></div>
+  </div>
+  <div class="lbl">привычки сегодня</div>
+  <div class="card" id="dhl"></div>
+  <div class="lbl">финансы месяца</div>
+  <div class="card">
+    <div class="frow"><div class="fl">Доходы</div><span class="fa" id="di" style="color:var(--green)">0 ₽</span></div>
+    <div class="frow"><div class="fl">Расходы</div><span class="fa" id="de" style="color:var(--red)">0 ₽</span></div>
+    <div class="frow"><div class="fl" style="font-weight:600">Остаток</div><span class="fa" id="db" style="color:var(--blue)">0 ₽</span></div>
+  </div>
+</div>
+
+<div class="page" id="p-habits">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:0 20px;margin-top:4px">
+    <div class="lbl" style="padding:0;margin:0">привычки</div>
+    <div class="str" id="strbadge">🔥 0</div>
+  </div>
+  <div class="card" style="margin-top:10px" id="hl"></div>
+  <div class="lbl">прогресс месяца</div>
+  <div class="card"><div class="cg" id="cdh2"></div><div class="cg" id="hcal"></div></div>
+  <div class="lbl">аналитика</div>
+  <div class="card"><div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:space-around" id="rings"></div></div>
+</div>
+
+<div class="page" id="p-fin">
+  <div class="lbl">доходы</div>
+  <div class="card" id="il"></div>
+  <div style="padding:0 16px;margin-bottom:12px"><button class="btn bp" onclick="openAM('income')">+ Добавить доход</button></div>
+  <div class="lbl">расходы</div>
+  <div class="card" id="el2"></div>
+  <div style="padding:0 16px;margin-bottom:12px"><button class="btn bp" onclick="openAM('expense')">+ Добавить расход</button></div>
+  <div class="lbl">итог</div>
+  <div class="card">
+    <div class="frow"><div class="fl">Всего доходов</div><span class="fa" id="ti2" style="color:var(--green)">0 ₽</span></div>
+    <div class="frow"><div class="fl">Всего расходов</div><span class="fa" id="te" style="color:var(--red)">0 ₽</span></div>
+    <div class="frow"><div class="fl" style="font-weight:700">Остаток</div><span class="fa" id="tb" style="color:var(--blue);font-size:18px">0 ₽</span></div>
+    <div class="frow"><div class="fl">% сбережений</div><span class="fa" id="sp" style="color:var(--gold)">0%</span></div>
+  </div>
+  <div class="lbl">по категориям</div>
+  <div class="card" id="bgl"></div>
+</div>
+
+<div class="page" id="p-week">
+  <div class="lbl">неделя</div>
+  <div style="display:flex;gap:5px;padding:0 16px;margin-bottom:12px;overflow-x:auto" id="wdays"></div>
+  <div class="lbl" id="sdlbl">задачи</div>
+  <div class="card" id="tlist"></div>
+  <div style="padding:0 16px;margin-bottom:12px"><button class="btn bp" onclick="openTM()">+ Задача</button></div>
+  <div class="lbl">блоки дня</div>
+  <div class="card">
+    <div class="frow"><span>🌅</span><textarea id="bm" style="flex:1;margin-left:10px;height:48px;resize:none;border-radius:8px;font-size:13px;padding:7px" placeholder="Утро…"></textarea></div>
+    <div class="frow"><span>☀️</span><textarea id="bd3" style="flex:1;margin-left:10px;height:48px;resize:none;border-radius:8px;font-size:13px;padding:7px" placeholder="День…"></textarea></div>
+    <div class="frow" style="border-bottom:none"><span>🌙</span><textarea id="be" style="flex:1;margin-left:10px;height:48px;resize:none;border-radius:8px;font-size:13px;padding:7px" placeholder="Вечер…"></textarea></div>
+  </div>
+  <div class="lbl">рефлексия</div>
+  <div class="card">
+    <div style="margin-bottom:10px"><label style="font-size:12px;color:var(--mut)">✅ Что удалось?</label><textarea id="rg" style="width:100%;height:48px;resize:none;margin-top:6px;border-radius:8px;font-size:13px;padding:7px" placeholder="…"></textarea></div>
+    <div><label style="font-size:12px;color:var(--mut)">📈 Что улучшить?</label><textarea id="ri" style="width:100%;height:48px;resize:none;margin-top:6px;border-radius:8px;font-size:13px;padding:7px" placeholder="…"></textarea></div>
+  </div>
+</div>
+
+<div class="page" id="p-set">
+  <div class="lbl">профиль</div>
+  <div class="card">
+    <div class="srow"><div class="sl">Имя</div><input type="text" id="sn" style="width:150px;padding:7px 10px;font-size:14px" placeholder="Твоё имя"></div>
+    <div class="srow" style="border-bottom:none"><div class="sl">Цель сбережений<small>% от дохода</small></div><input type="number" id="ssg" style="width:70px;padding:7px 10px;font-size:14px" placeholder="20" min="0" max="100"></div>
+  </div>
+  <div class="lbl">цели привычек</div>
+  <div class="card" id="hset"></div>
+  <div style="padding:0 16px;margin-top:8px;margin-bottom:12px"><button class="btn bp" onclick="saveSt()">Сохранить</button></div>
+  <div style="padding:0 16px;margin-bottom:24px"><button class="btn bd2" onclick="if(confirm('Сбросить всё?'))resetAll()">Сбросить данные</button></div>
+</div>
+
+<div class="mo hide" id="am">
+  <div class="md"><div class="mh"></div><h2 id="amt">Добавить</h2>
+    <div class="ir"><label>Название</label><input type="text" id="mn" placeholder="Например: Зарплата"></div>
+    <div class="ir"><label>Сумма, ₽</label><input type="number" id="ma" placeholder="0" min="0"></div>
+    <div class="ir"><label>Категория</label><select id="mc"></select></div>
+    <div class="ir"><label>Заметка</label><input type="text" id="mnote" placeholder="Необязательно"></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn" style="background:var(--s2)" onclick="closeAM()">Отмена</button>
+      <button class="btn bp" onclick="saveTx()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo hide" id="tm">
+  <div class="md"><div class="mh"></div><h2>Новая задача</h2>
+    <div class="ir"><label>Задача</label><input type="text" id="tn" placeholder="Что сделать?"></div>
+    <div class="ir"><label>Приоритет</label><select id="tp"><option value="high">🔴 Срочно + Важно</option><option value="med">🟡 Важно</option><option value="low">🟢 Не срочно</option><option value="idea">💡 Идея</option></select></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn" style="background:var(--s2)" onclick="closeTM()">Отмена</button>
+      <button class="btn bp" onclick="saveTask()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <button class="nb on" onclick="sw('dash',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Главная</button>
+  <button class="nb" onclick="sw('habits',this)"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Привычки</button>
+  <button class="nb" onclick="sw('fin',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Финансы</button>
+  <button class="nb" onclick="sw('week',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Неделя</button>
+  <button class="nb" onclick="sw('set',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Настройки</button>
+</nav>
+<script>
+const H=[
+  {id:'sport',ic:'🏃',n:'Спорт',g:'3 раза/нед',c:'var(--green)'},
+  {id:'read',ic:'📚',n:'Чтение',g:'20 стр/день',c:'var(--blue)'},
+  {id:'study',ic:'🎓',n:'Учёба',g:'5 ч/нед',c:'var(--gold)'},
+  {id:'water',ic:'💧',n:'Вода',g:'2 л/день',c:'var(--teal)'},
+  {id:'vitamins',ic:'💊',n:'Витамины',g:'ежедневно',c:'var(--red)'},
+  {id:'sleep',ic:'😴',n:'Сон',g:'8 ч/ночь',c:'var(--purple)'},
+  {id:'food',ic:'🥗',n:'Питание',g:'ежедневно',c:'var(--teal)'},
+  {id:'nosocial',ic:'📵',n:'Без соцсетей',g:'до 11:00',c:'var(--purple)'},
+  {id:'diary',ic:'📝',n:'Дневник',g:'ежедневно',c:'var(--mut)'},
+  {id:'leisure',ic:'🎮',n:'Досуг',g:'2 раза/нед',c:'var(--blue)'},
+  {id:'work',ic:'💼',n:'Работа',g:'8 ч/день',c:'var(--mut)'},
+];
+const PC={high:'var(--red)',med:'var(--gold)',low:'var(--green)',idea:'var(--purple)'};
+const fmt=n=>new Intl.NumberFormat('ru-RU').format(Math.round(n))+'₽';
+const now=new Date(),tk=now.toISOString().slice(0,10),mk=tk.slice(0,7);
+function ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+let hd=ld('hd',{}),tx=ld('tx',[]),tasks=ld('tasks',{}),db2=ld('db2',{}),rf=ld('rf',{});
+let st=ld('st',{name:'',sg:20,goals:{sport:'3 раза/нед',read:'20 стр/день',study:'5 ч/нед',water:'2 л/день',vitamins:'ежедневно',sleep:'8 ч/ночь',food:'ежедневно',nosocial:'до 11:00',diary:'ежедневно',leisure:'2 раза/нед',work:'8 ч/день'}});
+let sd=tk,mtp='income',cp='dash';
+const chk='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+function sw(p,btn){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
+  document.getElementById('p-'+p).classList.add('on');
+  btn.classList.add('on');cp=p;
+  const t={dash:'LifeOS',habits:'Привычки',fin:'Финансы',week:'Неделя',set:'Настройки'};
+  document.getElementById('btitle').textContent=t[p];
+  if(p==='dash')rDash();if(p==='habits')rHabits();if(p==='fin')rFin();if(p==='week')rWeek();if(p==='set')rSet();
+}
+function tHabit(id){if(!hd[tk])hd[tk]={};hd[tk][id]=!hd[tk][id];sv('hd',hd);if(cp==='dash')rDash();if(cp==='habits')rHabits();}
+function streak(){let s=0,d=new Date(now);while(s<400){const k=d.toISOString().slice(0,10),hh=hd[k]||{};if(H.filter(x=>hh[x.id]).length>=Math.ceil(H.length/2)){s++;d.setDate(d.getDate()-1);}else break;}return s;}
+function mPct(){let tot=0,c=0;for(let d=1;d<=now.getDate();d++){const k=mk+'-'+String(d).padStart(2,'0'),hh=hd[k]||{};tot+=H.filter(x=>hh[x.id]).length/H.length;c++;}return c>0?Math.round(tot/c*100):0;}
+function rDash(){
+  const th=hd[tk]||{},dn=H.filter(h=>th[h.id]).length;
+  document.getElementById('d-h').textContent=dn+'/'+H.length;
+  document.getElementById('d-str').textContent='🔥 '+streak()+' дней';
+  document.getElementById('d-mp').textContent=mPct()+'%';
+  const at=Object.values(tasks).flat(),tdn=at.filter(t=>t.done).length;
+  document.getElementById('d-tk').textContent=at.length;
+  const inc=tx.filter(t=>t.tp==='income'&&t.dt.startsWith(mk)).reduce((a,t)=>a+t.am,0);
+  const exp=tx.filter(t=>t.tp==='expense'&&t.dt.startsWith(mk)).reduce((a,t)=>a+t.am,0);
+  const bal=inc-exp;
+  document.getElementById('di').textContent=fmt(inc);document.getElementById('de').textContent=fmt(exp);
+  document.getElementById('db').textContent=fmt(bal);document.getElementById('d-bal').textContent=fmt(bal);
+  document.getElementById('d-bal').style.color=bal>=0?'var(--green)':'var(--red)';
+  document.getElementById('dhl').innerHTML=H.slice(0,5).map(h=>`<div class="hrow">
+    <span class="hico">${h.ic}</span><div class="hi"><div class="hn">${h.n}</div><div class="hg">${st.goals[h.id]||h.g}</div></div>
+    <button class="hbtn${th[h.id]?' ok':''}" onclick="tHabit('${h.id}')">${th[h.id]?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}</button>
+  </div>`).join('');
+}
+function rHabits(){
+  const th=hd[tk]||{};
+  document.getElementById('strbadge').textContent='🔥 '+streak()+' дней';
+  document.getElementById('hl').innerHTML=H.map(h=>{
+    const tot=Object.values(hd).filter(d=>d[h.id]).length,days=Math.max(Object.keys(hd).length,1),p=Math.round(tot/days*100);
+    return`<div class="hrow"><span class="hico">${h.ic}</span><div class="hi"><div class="hn">${h.n}</div><div class="hg">${st.goals[h.id]||h.g}</div><div class="pb"><div class="pf" style="width:${p}%;background:${h.c}"></div></div></div>
+    <button class="hbtn${th[h.id]?' ok':''}" onclick="tHabit('${h.id}')">${th[h.id]?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}</button></div>`;
+  }).join('');
+  rCal();rRings();
+}
+function rCal(){
+  const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  document.getElementById('cdh2').innerHTML=days.map(d=>`<div class="cdh">${d}</div>`).join('');
+  const dim=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+  const fd=new Date(now.getFullYear(),now.getMonth(),1).getDay();
+  const off=fd===0?6:fd-1;let h='';
+  for(let i=0;i<off;i++)h+=`<div class="cd em">·</div>`;
+  for(let d=1;d<=dim;d++){const k=mk+'-'+String(d).padStart(2,'0'),hh=hd[k]||{},dn=H.filter(x=>hh[x.id]).length,isTd=d===now.getDate();
+    h+=`<div class="cd${dn>=H.length/2?' dn':isTd?' td':''}">${d}</div>`;}
+  document.getElementById('hcal').innerHTML=h;
+}
+function rRings(){
+  const dim=now.getDate();
+  const grps=[
+    {ids:['sport'],lbl:'Спорт',c:'#3FB950'},{ids:['read','study'],lbl:'Знания',c:'#388BFD'},
+    {ids:['water','sleep'],lbl:'Здоровье',c:'#39C5CF'},{ids:['diary','food'],lbl:'Быт',c:'#D29922'},
+  ];
+  const r=32,ci=2*Math.PI*r;
+  document.getElementById('rings').innerHTML=grps.map(g=>{
+    let tot=0;for(let d=1;d<=dim;d++){const k=mk+'-'+String(d).padStart(2,'0'),hh=hd[k]||{};if(g.ids.some(id=>hh[id]))tot++;}
+    const p=Math.round(tot/dim*100),off2=ci*(1-p/100);
+    return`<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div class="ring"><svg width="76" height="76" viewBox="0 0 76 76"><circle fill="none" stroke="var(--bd)" stroke-width="7" cx="38" cy="38" r="${r}"/><circle fill="none" stroke="${g.c}" stroke-width="7" stroke-linecap="round" cx="38" cy="38" r="${r}" stroke-dasharray="${ci}" stroke-dashoffset="${off2}" transform="rotate(-90 38 38)"/></svg>
+      <div class="rl"><div class="rp" style="color:${g.c}">${p}%</div><div class="rm">${g.lbl}</div></div></div></div>`;
+  }).join('');
+}
+function rFin(){
+  const inc=tx.filter(t=>t.tp==='income'&&t.dt.startsWith(mk)),exp=tx.filter(t=>t.tp==='expense'&&t.dt.startsWith(mk));
+  const ti=inc.reduce((a,t)=>a+t.am,0),te=exp.reduce((a,t)=>a+t.am,0),tb=ti-te;
+  document.getElementById('ti2').textContent=fmt(ti);document.getElementById('te').textContent=fmt(te);
+  document.getElementById('tb').textContent=fmt(tb);document.getElementById('tb').style.color=tb>=0?'var(--blue)':'var(--red)';
+  document.getElementById('sp').textContent=ti>0?Math.round(tb/ti*100)+'%':'0%';
+  const row=(t,isInc)=>`<div class="frow"><div class="fl">${t.cat}<small>${t.note||t.dt}</small></div>
+    <div style="display:flex;align-items:center"><span class="fa" style="color:${isInc?'var(--green)':'var(--red)'}">${fmt(t.am)}</span>
+    <button class="ickbtn" onclick="delTx('${t.id}')">×</button></div></div>`;
+  document.getElementById('il').innerHTML=inc.length?inc.map(t=>row(t,true)).join(''):'<div style="color:var(--mut);font-size:14px;text-align:center;padding:12px">Нет записей</div>';
+  document.getElementById('el2').innerHTML=exp.length?exp.map(t=>row(t,false)).join(''):'<div style="color:var(--mut);font-size:14px;text-align:center;padding:12px">Нет записей</div>';
+  const cats={};exp.forEach(t=>{const c=t.cat.replace(/^\S+\s/,'');cats[c]=(cats[c]||0)+t.am;});
+  document.getElementById('bgl').innerHTML=Object.entries(cats).map(([c,a])=>`<div class="frow"><div class="fl">${c}</div><span class="fa" style="color:var(--red)">${fmt(a)}</span></div>`).join('')||'<div style="color:var(--mut);font-size:14px;text-align:center;padding:12px">Расходов нет</div>';
+}
+function rWeek(){
+  const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  const ws=new Date(now),dow=now.getDay()===0?6:now.getDay()-1;ws.setDate(now.getDate()-dow);
+  const wdEl=document.getElementById('wdays');wdEl.innerHTML='';
+  for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);const k=d.toISOString().slice(0,10);
+    const btn=document.createElement('button');btn.className='wdb'+(k===sd?' sel':'');
+    btn.innerHTML=`<span style="font-size:10px">${days[i]}</span><span class="dn">${d.getDate()}</span>`;
+    btn.onclick=()=>{sd=k;rWeek();};wdEl.appendChild(btn);}
+  const selD=new Date(sd);
+  document.getElementById('sdlbl').textContent=selD.toLocaleDateString('ru',{weekday:'long',day:'numeric',month:'long'});
+  const dt=tasks[sd]||[];
+  document.getElementById('tlist').innerHTML=dt.length?dt.map((t,i)=>`<div class="ti">
+    <button class="tc${t.done?' ok':''}" onclick="togTask('${sd}',${i})">${t.done?`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`:''}</button>
+    <span class="tt${t.done?' x':''}">${t.text}</span>
+    <div class="pd" style="background:${PC[t.priority]||'var(--mut)'}"></div>
+    <button class="ickbtn" onclick="delTask('${sd}',${i})">×</button></div>`).join(''):'<div style="color:var(--mut);font-size:14px;text-align:center;padding:12px">Задач нет</div>';
+  const blk=db2[sd]||{};
+  document.getElementById('bm').value=blk.m||'';document.getElementById('bd3').value=blk.d||'';document.getElementById('be').value=blk.e||'';
+  const r2=rf[sd]||{};
+  document.getElementById('rg').value=r2.g||'';document.getElementById('ri').value=r2.i||'';
+  ['bm','bd3','be'].forEach(id=>document.getElementById(id).oninput=sBlk);
+  ['rg','ri'].forEach(id=>document.getElementById(id).oninput=sRf);
+}
+function sBlk(){db2[sd]={m:document.getElementById('bm').value,d:document.getElementById('bd3').value,e:document.getElementById('be').value};sv('db2',db2);}
+function sRf(){rf[sd]={g:document.getElementById('rg').value,i:document.getElementById('ri').value};sv('rf',rf);}
+function togTask(day,i){tasks[day][i].done=!tasks[day][i].done;sv('tasks',tasks);rWeek();}
+function delTask(day,i){tasks[day].splice(i,1);sv('tasks',tasks);rWeek();}
+function rSet(){
+  document.getElementById('sn').value=st.name||'';document.getElementById('ssg').value=st.sg||20;
+  document.getElementById('hset').innerHTML=H.map(h=>`<div class="srow" style="${H.indexOf(h)===H.length-1?'border-bottom:none':''}">
+    <div class="sl">${h.ic} ${h.n}</div>
+    <input type="text" data-hid="${h.id}" value="${st.goals[h.id]||h.g}" style="width:130px;padding:7px 10px;font-size:13px"></div>`).join('');
+}
+function saveSt(){
+  st.name=document.getElementById('sn').value;st.sg=parseInt(document.getElementById('ssg').value)||20;
+  document.querySelectorAll('[data-hid]').forEach(inp=>{st.goals[inp.dataset.hid]=inp.value;});
+  H.forEach(h=>{if(st.goals[h.id])h.g=st.goals[h.id];});sv('st',st);alert('Сохранено ✓');
+}
+function resetAll(){localStorage.clear();location.reload();}
+function openAM(tp){mtp=tp;document.getElementById('amt').textContent=tp==='income'?'Добавить доход':'Добавить расход';
+  document.getElementById('mn').value='';document.getElementById('ma').value='';document.getElementById('mnote').value='';
+  const sel=document.getElementById('mc');
+  sel.innerHTML=tp==='income'?'<option>💼 Зарплата</option><option>💻 Фриланс</option><option>📈 Инвестиции</option><option>🏠 Аренда</option><option>🎁 Прочее</option>':
+    '<option>🍔 Питание</option><option>🏠 Жильё</option><option>🚗 Транспорт</option><option>🎉 Досуг</option><option>💊 Здоровье</option><option>📚 Образование</option><option>💻 Подписки</option><option>👗 Одежда</option><option>💳 Прочее</option>';
+  document.getElementById('am').classList.remove('hide');}
+function closeAM(){document.getElementById('am').classList.add('hide');}
+function saveTx(){const a=parseFloat(document.getElementById('ma').value);if(!a||isNaN(a))return;
+  tx.push({id:Date.now().toString(),tp:mtp,cat:document.getElementById('mc').value,note:document.getElementById('mnote').value,am:a,dt:tk});
+  sv('tx',tx);closeAM();rFin();}
+function delTx(id){tx=tx.filter(t=>t.id!==id);sv('tx',tx);rFin();}
+function openTM(){document.getElementById('tn').value='';document.getElementById('tm').classList.remove('hide');}
+function closeTM(){document.getElementById('tm').classList.add('hide');}
+function saveTask(){const text=document.getElementById('tn').value.trim();if(!text)return;
+  if(!tasks[sd])tasks[sd]=[];tasks[sd].push({text,done:false,priority:document.getElementById('tp').value});
+  sv('tasks',tasks);closeTM();rWeek();}
+document.getElementById('bdate').textContent=now.toLocaleDateString('ru',{day:'numeric',month:'long'});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+rDash();
+</script>
+</body>
+</html>
