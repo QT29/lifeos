@@ -1,6 +1,6 @@
 {
-  "name": "LifeOS — Трекер жизни",
-  "short_name": "LifeOS",
+  "name": "QTracker — Трекер жизни",
+  "short_name": "QTracker",
   "description": "Трекер привычек, финансов и недели",
   "start_url": "/",
   "display": "standalone",
@@ -8,7 +8,6 @@
   "theme_color": "#0D1117",
   "orientation": "portrait",
   "icons": [
-    {"src": "icon-192.svg", "sizes": "192x192", "type": "image/svg+xml"},
-    {"src": "icon-512.svg", "sizes": "512x512", "type": "image/svg+xml"}
+    {"src": "icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any maskable"}
   ]
 }

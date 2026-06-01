@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="LifeOS">
+<meta name="apple-mobile-web-app-title" content="QTracker">
 <meta name="theme-color" content="#0D1117">
-<title>LifeOS</title>
+<title>QTracker</title>
 <link rel="manifest" href="manifest.json">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -95,7 +95,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue)}
 </style>
 </head>
 <body>
-<div class="bar"><h1 id="btitle">LifeOS</h1><span id="bdate"></span></div>
+<div class="bar"><h1 id="btitle">QTracker</h1><span id="bdate"></span></div>
 
 <div class="page on" id="p-dash">
   <div class="lbl">сводка</div>
@@ -235,7 +235,7 @@ function sw(p,btn){
   document.querySelectorAll('.nb').forEach(e=>e.classList.remove('on'));
   document.getElementById('p-'+p).classList.add('on');
   btn.classList.add('on');cp=p;
-  const t={dash:'LifeOS',habits:'Привычки',fin:'Финансы',week:'Неделя',set:'Настройки'};
+  const t={dash:'QTracker',habits:'Привычки',fin:'Финансы',week:'Неделя',set:'Настройки'};
   document.getElementById('btitle').textContent=t[p];
   if(p==='dash')rDash();if(p==='habits')rHabits();if(p==='fin')rFin();if(p==='week')rWeek();if(p==='set')rSet();
 }
